@@ -51,7 +51,7 @@ describe('DetailedCard', () => {
     expect(screen.getByText('product description')).toBeInTheDocument();
   });
 
-  test('hides details component on click', () => {
+  it('hides details component on click', () => {
     const router = createMemoryRouter(routesConfig, {
       initialEntries: ['/details/:queryParameters'],
     });

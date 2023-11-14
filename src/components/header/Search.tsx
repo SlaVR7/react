@@ -2,8 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import handleSearch from '../../services/handleSearch';
 import myContext from '../../services/myContext';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../../hooks/redux';
+import { searchSlice } from '../../store/reducers/searchSlice';
 
 function Search() {
+  const dispatch = useDispatch();
+  const inputValue = useAppSelector((state) => state.searchReducer.userInput);
+  const setInputValue = searchSlice.actions.setSearchQuery;
   const navigate = useNavigate();
   const [isSelectCall, setIsSelectCall] = useState(false);
   const {
@@ -13,8 +19,6 @@ function Search() {
     setLimit,
     limit,
     page,
-    inputValue,
-    setInputValue,
     setPage,
   } = useContext(myContext);
 
@@ -54,7 +58,7 @@ function Search() {
         placeholder="Enter your search query"
         value={inputValue}
         onChange={(e) => {
-          setInputValue(e.target.value);
+          dispatch(setInputValue(e.target.value));
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
@@ -81,7 +85,6 @@ function Search() {
       <button
         className={'header-button'}
         onClick={() => {
-          console.log('Call HandleSearch With:', inputValue);
           handleSearch({
             setIsLoading,
             setProductsData,

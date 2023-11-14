@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
-import { setAnonymousToken } from './getToken';
 import { ProductList } from '../interfaces';
-
-const apiUrl: string = 'https://api.us-central1.gcp.commercetools.com';
-const projectKey: string = 'soap-shop';
+import { projectKey, apiUrl } from '../lib/constants';
+import { setAnonymousToken } from './getToken';
 
 export async function getProductsList(
   query = '',
