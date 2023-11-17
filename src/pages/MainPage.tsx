@@ -1,36 +1,35 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import Search from '../components/header/Search';
 import CardList from '../components/body/CardList';
-import MyContext, { MyContextProvider } from '../services/myContext';
 import ErrorBoundary from '../components/addition/ErrorBoundary';
-import { checkToken } from '../services/getToken';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { closeDetails } from '../services/closeProductWindow';
+import { useAppSelector } from '../hooks/redux';
 
 export function MainPage() {
   const navigate = useNavigate();
   const { details } = useParams();
-  const { page, limit, setProduct } = useContext(MyContext);
-  useEffect(() => {
-    checkToken();
-  }, []);
+
+  const page = useAppSelector((state) => state.pagesReducer.currentPage);
+  const limit = useAppSelector((state) => state.limitReducer.limit);
 
   return (
-    <MyContextProvider>
-      <ErrorBoundary>
-        <div className="main-posts-container">
-          <div
-            onClick={() =>
-              details && closeDetails(page, limit, navigate, setProduct)
+    <ErrorBoundary>
+      <div className="main-posts-container">
+        <div
+          onClick={(e) => {
+            if (details) {
+              e.preventDefault();
+              closeDetails(page, limit, navigate);
             }
-          >
-            <Search />
-            <CardList />
-          </div>
-          <Outlet />
+          }}
+        >
+          <Search />
+          <CardList />
         </div>
-      </ErrorBoundary>
-    </MyContextProvider>
+        <Outlet />
+      </div>
+    </ErrorBoundary>
   );
 }
 

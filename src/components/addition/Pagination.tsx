@@ -1,47 +1,17 @@
-import { useContext, useEffect, useState } from 'react';
-import handleSearch from '../../services/handleSearch';
 import { getPagesArray } from '../../services/getPagesCount';
-import MyContext from '../../services/myContext';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { setCurrentPage } from '../../redux/store/reducers/pagesSlice';
 import { useNavigate } from 'react-router-dom';
 
 function Pagination() {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const page = useAppSelector((state) => state.pagesReducer.currentPage);
+  const limit = useAppSelector((state) => state.limitReducer.limit);
+  const totalPages = useAppSelector((state) => state.pagesReducer.totalPages);
 
-  const {
-    setIsLoading,
-    setProductsData,
-    inputValue,
-    limit,
-    setTotalProducts,
-    totalPages,
-    page,
-    setPage,
-    product,
-  } = useContext(MyContext);
-
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-  useEffect(() => {
-    setIsInitialLoad(false);
-  }, []);
-
-  useEffect(() => {
-    if (!isInitialLoad) {
-      handleSearch({
-        setIsLoading,
-        setProductsData,
-        inputValue,
-        limit,
-        setTotalProducts,
-        page,
-      });
-      product
-        ? navigate(`?page=${page}&limit=${limit}&product=${product}`)
-        : navigate(`?page=${page}&limit=${limit}`);
-    }
-  }, [page, isInitialLoad]);
-
-  const currentPage = +page > totalPages ? '1' : page;
-  const pagesArray: string[] = getPagesArray(totalPages);
+  const currentPage = +page > +totalPages ? '1' : page;
+  const pagesArray: string[] = getPagesArray(+totalPages);
 
   return (
     <div className="pagination-pages">
@@ -49,7 +19,8 @@ function Pagination() {
         return (
           <div
             onClick={() => {
-              setPage(p);
+              dispatch(setCurrentPage(p));
+              navigate(`/?page=${p}&limit=${limit}`);
             }}
             className={
               currentPage === p

@@ -1,26 +1,30 @@
-import { useNavigate } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
-import MyContext from '../services/myContext';
-import { ProductData } from '../interfaces';
-import RouteManager from '../services/routeManager';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader } from '../components/addition/Loader';
-import { fetchDataAndLoadImages } from '../services/fetchDataAndLoadImages';
 import { closeDetails } from '../services/closeProductWindow';
+import { useAppSelector } from '../hooks/redux';
+import { useGetProductsListQuery } from '../redux/productsApi';
+import { useEffect, useState } from 'react';
+import { fetchDataAndLoadImages } from '../services/fetchDataAndLoadImages';
+import { ProductData } from '../interfaces';
 
 function DetailedCard() {
-  const { page, setProduct, productsData, limit } = useContext(MyContext);
+  const limit = useAppSelector((state) => state.limitReducer.limit);
+  const page = useAppSelector((state) => state.pagesReducer.currentPage);
+  const query = useAppSelector((state) => state.searchReducer.userInput);
+  const { data } = useGetProductsListQuery({ query, limit, page });
   const navigate = useNavigate();
-  const productName = RouteManager().currentProduct;
-  const targetProductObj = productsData?.find(
-    (product) => productName === product.name.en
+  const [searchParams] = useSearchParams();
+  const productName = searchParams.get('product');
+  const targetProductObj = data?.results?.find(
+    (product: ProductData) => productName === product.name.en
   );
-
-  const [currentObj, setCurrentObj] = useState<ProductData>();
-  const [isLoadingImages, setIsLoadingImages] = useState(true);
+  // ХРАНИТЬ В STORE
+  const [imagesLoading, setImagesLoading] = useState(true);
+  const images = targetProductObj?.masterVariant.images;
 
   useEffect(() => {
-    fetchDataAndLoadImages(targetProductObj, setCurrentObj, setIsLoadingImages);
-  }, [targetProductObj]);
+    fetchDataAndLoadImages(targetProductObj, setImagesLoading);
+  }, []);
 
   return (
     <div
@@ -30,31 +34,31 @@ function DetailedCard() {
       <div className="product-page">
         <button
           className="detailed-product-close"
-          onClick={() => closeDetails(page, limit, navigate, setProduct)}
+          onClick={() => closeDetails(page, limit, navigate)}
         >
           Close
         </button>
-        {isLoadingImages ? (
+        {!data || imagesLoading ? (
           <Loader />
         ) : (
           <>
-            <h1 className="detailed-product-title">{currentObj?.name.en}</h1>
+            <h1 className="detailed-product-title">
+              {targetProductObj?.name.en}
+            </h1>
             <div className="detailed-images-block">
-              <img
-                className="detailed-product-image"
-                src={currentObj?.masterVariant.images[0].url}
-                alt="product image"
-              />
-              {currentObj?.masterVariant.images[1] && (
-                <img
-                  className="detailed-product-image"
-                  src={currentObj.masterVariant.images[1].url}
-                  alt="product image"
-                />
-              )}
+              {images
+                .slice(0, 2)
+                .map((image: { url: string }, index: number) => (
+                  <img
+                    key={index}
+                    className="detailed-product-image"
+                    src={image.url}
+                    alt={`product image ${index + 1}`}
+                  />
+                ))}
             </div>
             <p className="detailed-product-info">
-              {currentObj?.description.en}
+              {targetProductObj?.description.en}
             </p>
           </>
         )}

@@ -1,54 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
-import handleSearch from '../../services/handleSearch';
-import myContext from '../../services/myContext';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../hooks/redux';
-import { searchSlice } from '../../store/reducers/searchSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { searchSlice } from '../../redux/store/reducers/searchSlice';
+import { limitSlice } from '../../redux/store/reducers/limitSlice';
+import { pagesSlice } from '../../redux/store/reducers/pagesSlice';
 
 function Search() {
-  const dispatch = useDispatch();
-  const inputValue = useAppSelector((state) => state.searchReducer.userInput);
+  const dispatch = useAppDispatch();
   const setInputValue = searchSlice.actions.setSearchQuery;
+  const userTypeValue = useAppSelector((state) => state.searchReducer.userType);
+  const setUserType = searchSlice.actions.setUserType;
+  const setLimit = limitSlice.actions.setLimit;
+  const setPage = pagesSlice.actions.setCurrentPage;
   const navigate = useNavigate();
-  const [isSelectCall, setIsSelectCall] = useState(false);
-  const {
-    setProductsData,
-    setIsLoading,
-    setTotalProducts,
-    setLimit,
-    limit,
-    page,
-    setPage,
-  } = useContext(myContext);
-
-  const getError = () => {
-    setProductsData(null);
-  };
-
-  const handleSearchAndNavigate = (isToFirstPage?: boolean) => {
-    handleSearch({
-      setIsLoading,
-      setProductsData,
-      inputValue,
-      limit,
-      setTotalProducts,
-      page,
-    });
-    let currentPage: string;
-    if (isToFirstPage || isSelectCall) {
-      currentPage = '1';
-    } else currentPage = page;
-    setPage(currentPage);
-    navigate(`?page=${currentPage}&limit=${limit}`);
-    setIsSelectCall(false);
-  };
-
-  useEffect(() => {
-    if (isSelectCall) {
-      handleSearchAndNavigate();
-    }
-  }, [limit]);
 
   return (
     <header>
@@ -56,21 +19,21 @@ function Search() {
         className={'search-input'}
         type="text"
         placeholder="Enter your search query"
-        value={inputValue}
+        value={userTypeValue}
         onChange={(e) => {
-          dispatch(setInputValue(e.target.value));
+          dispatch(setUserType(e.target.value));
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
-            handleSearchAndNavigate(true);
+            dispatch(setInputValue(userTypeValue));
           }
         }}
       />
       <select
         className={'search-input number-input'}
         onChange={(event) => {
-          setLimit(event.target.value);
-          setIsSelectCall(true);
+          dispatch(setLimit(event.target.value));
+          dispatch(setPage('1'));
         }}
         defaultValue="default"
       >
@@ -85,21 +48,12 @@ function Search() {
       <button
         className={'header-button'}
         onClick={() => {
-          handleSearch({
-            setIsLoading,
-            setProductsData,
-            inputValue,
-            limit,
-            setTotalProducts,
-          });
-          setPage('1');
+          dispatch(setPage('1'));
+          dispatch(setInputValue(userTypeValue));
           navigate(`?page=1&limit=10`);
         }}
       >
         Search
-      </button>
-      <button className={'header-button'} onClick={getError}>
-        Get an error
       </button>
     </header>
   );

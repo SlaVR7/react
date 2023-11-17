@@ -1,10 +1,5 @@
 import React, { ReactNode } from 'react';
 
-export interface SearchButtonProps {
-  inputValue: string;
-  limit: string;
-}
-
 export interface ProductData {
   name: {
     en: string;
@@ -59,10 +54,6 @@ export interface DataState {
   isLoading: boolean;
   totalProducts: number;
   setTotalProducts: React.Dispatch<React.SetStateAction<number>>;
-  setLimit: React.Dispatch<React.SetStateAction<string>>;
-  limit: string;
-  inputValue: string;
-  setInputValue: React.Dispatch<React.SetStateAction<string>>;
   totalPages: number;
   page: string;
   setPage: React.Dispatch<React.SetStateAction<string>>;
