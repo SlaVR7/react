@@ -2,25 +2,29 @@ import React from 'react';
 import Search from '../components/header/Search';
 import CardList from '../components/body/CardList';
 import ErrorBoundary from '../components/addition/ErrorBoundary';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
-import { closeDetails } from '../services/closeProductWindow';
-import { useAppSelector } from '../hooks/redux';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { productsSlice } from '../redux/store/reducers/productSlice';
 
 export function MainPage() {
   const navigate = useNavigate();
-  const { details } = useParams();
+  const dispatch = useAppDispatch();
+  const isDetailsOpen = useAppSelector(
+    (state) => state.productsReducer.isDetailsOpen
+  );
+  const setIsDetailsOpen = productsSlice.actions.setIsDetailsOpen;
 
   const page = useAppSelector((state) => state.pagesReducer.currentPage);
   const limit = useAppSelector((state) => state.limitReducer.limit);
 
   return (
     <ErrorBoundary>
-      <div className="main-posts-container">
+      <div data-testid="main-page" className="main-posts-container">
         <div
-          onClick={(e) => {
-            if (details) {
-              e.preventDefault();
-              closeDetails(page, limit, navigate);
+          onClick={() => {
+            if (isDetailsOpen) {
+              dispatch(setIsDetailsOpen(false));
+              navigate(`/?page=${page}&limit=${limit}`);
             }
           }}
         >

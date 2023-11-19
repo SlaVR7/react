@@ -1,16 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { searchSlice } from '../../redux/store/reducers/searchSlice';
-import { limitSlice } from '../../redux/store/reducers/limitSlice';
-import { pagesSlice } from '../../redux/store/reducers/pagesSlice';
+import { setLimit } from '../../redux/store/reducers/limitSlice';
+import { setCurrentPage } from '../../redux/store/reducers/pagesSlice';
 
 function Search() {
   const dispatch = useAppDispatch();
   const setInputValue = searchSlice.actions.setSearchQuery;
   const userTypeValue = useAppSelector((state) => state.searchReducer.userType);
   const setUserType = searchSlice.actions.setUserType;
-  const setLimit = limitSlice.actions.setLimit;
-  const setPage = pagesSlice.actions.setCurrentPage;
   const navigate = useNavigate();
 
   return (
@@ -26,6 +24,7 @@ function Search() {
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             dispatch(setInputValue(userTypeValue));
+            localStorage.setItem('term', userTypeValue);
           }
         }}
       />
@@ -33,7 +32,7 @@ function Search() {
         className={'search-input number-input'}
         onChange={(event) => {
           dispatch(setLimit(event.target.value));
-          dispatch(setPage('1'));
+          dispatch(setCurrentPage('1'));
         }}
         defaultValue="default"
       >
@@ -48,8 +47,9 @@ function Search() {
       <button
         className={'header-button'}
         onClick={() => {
-          dispatch(setPage('1'));
+          dispatch(setCurrentPage('1'));
           dispatch(setInputValue(userTypeValue));
+          localStorage.setItem('term', userTypeValue);
           navigate(`?page=1&limit=10`);
         }}
       >

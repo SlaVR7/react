@@ -1,26 +1,34 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Loader } from '../components/addition/Loader';
-import { closeDetails } from '../services/closeProductWindow';
-import { useAppSelector } from '../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { useGetProductsListQuery } from '../redux/productsApi';
 import { useEffect, useState } from 'react';
 import { fetchDataAndLoadImages } from '../services/fetchDataAndLoadImages';
 import { ProductData } from '../interfaces';
+import { setDetailsLoading } from '../redux/store/reducers/loadingSlice';
 
 function DetailedCard() {
+  const dispatch = useAppDispatch();
   const limit = useAppSelector((state) => state.limitReducer.limit);
   const page = useAppSelector((state) => state.pagesReducer.currentPage);
   const query = useAppSelector((state) => state.searchReducer.userInput);
   const { data } = useGetProductsListQuery({ query, limit, page });
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const productName = searchParams.get('product');
   const targetProductObj = data?.results?.find(
     (product: ProductData) => productName === product.name.en
   );
-  // ХРАНИТЬ В STORE
+  const isDetailsLoading = useAppSelector(
+    (state) => state.loadingReducer.isDetailsLoading
+  );
   const [imagesLoading, setImagesLoading] = useState(true);
   const images = targetProductObj?.masterVariant.images;
+
+  useEffect(() => {
+    imagesLoading
+      ? dispatch(setDetailsLoading(true))
+      : dispatch(setDetailsLoading(false));
+  }, [imagesLoading]);
 
   useEffect(() => {
     fetchDataAndLoadImages(targetProductObj, setImagesLoading);
@@ -32,13 +40,10 @@ function DetailedCard() {
       className="detailed-product-container"
     >
       <div className="product-page">
-        <button
-          className="detailed-product-close"
-          onClick={() => closeDetails(page, limit, navigate)}
-        >
-          Close
-        </button>
-        {!data || imagesLoading ? (
+        <Link to={`/?page=${page}&limit=${limit}`}>
+          <button className="detailed-product-close">Close</button>
+        </Link>
+        {!data || isDetailsLoading ? (
           <Loader />
         ) : (
           <>

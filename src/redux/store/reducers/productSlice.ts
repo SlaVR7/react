@@ -5,6 +5,7 @@ export const productsSlice = createSlice({
   initialState: {
     totalProducts: '0',
     productsArray: [],
+    isDetailsOpen: false,
   },
   reducers: {
     setTotalProducts(state, action) {
@@ -12,6 +13,9 @@ export const productsSlice = createSlice({
     },
     setProductsArray(state, action) {
       state.productsArray = action.payload;
+    },
+    setIsDetailsOpen(state, action) {
+      state.isDetailsOpen = action.payload;
     },
   },
 });

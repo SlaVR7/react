@@ -7,7 +7,7 @@ if (!['5', '10', '15', '20'].includes(initialLimit)) {
   initialLimit = '10';
 }
 
-export const limitSlice = createSlice({
+const limitSlice = createSlice({
   name: 'perPage',
   initialState: {
     limit: initialLimit,
@@ -18,5 +18,7 @@ export const limitSlice = createSlice({
     },
   },
 });
+
+export const { setLimit } = limitSlice.actions;
 
 export default limitSlice.reducer;

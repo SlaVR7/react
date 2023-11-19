@@ -13,8 +13,8 @@ function CardList() {
   const limit = useAppSelector((state) => state.limitReducer.limit);
   const page = useAppSelector((state) => state.pagesReducer.currentPage);
   const query = useAppSelector((state) => state.searchReducer.userInput);
-  // const isLoading = useAppSelector((state) => state.loadingReducer.isLoading);
-  const { data, isLoading } = useGetProductsListQuery({ query, limit, page });
+  const isLoading = useAppSelector((state) => state.loadingReducer.isLoading);
+  const { data } = useGetProductsListQuery({ query, limit, page });
 
   useEffect(() => {
     if (data) {

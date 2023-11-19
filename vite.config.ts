@@ -11,6 +11,12 @@ export default defineConfig({
       enabled: true,
       provider: 'v8',
       all: true,
+      exclude: [
+        'src/main.tsx',
+        'src/interfaces.ts',
+        '.eslintrc.cjs',
+        'src/vite-env.d.ts',
+      ],
     },
   },
 });

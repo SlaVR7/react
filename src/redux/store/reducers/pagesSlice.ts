@@ -4,7 +4,7 @@ import queryString from 'query-string';
 const urlParams = queryString.parse(window.location.search);
 const initialPage: string = (urlParams.page as string) || '1';
 
-export const pagesSlice = createSlice({
+const pagesSlice = createSlice({
   name: 'pages',
   initialState: {
     currentPage: initialPage,

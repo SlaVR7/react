@@ -1,51 +1,70 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import CardList from '../components/body/CardList';
-import MyContext from '../services/myContext';
 import { BrowserRouter } from 'react-router-dom';
-import { contextValue, mockData } from './service/mockData';
-import { ProductData } from '../interfaces';
 import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
+import { setupStore } from '../redux/store/store';
 
 describe('CardList', () => {
   it('renders the correct number of product cards', () => {
-    const mockProductData: ProductData[] = new Array(10)
-      .fill(null)
-      .map((_, index) => ({
-        ...mockData,
-        name: { en: `Product ${index + 1}` },
-      }));
-    contextValue.productsData = mockProductData;
+    const store = setupStore();
+    const mockData = {
+      results: [{ name: { en: 'Product 1' } }, { name: { en: 'Product 2' } }],
+      total: 10,
+    };
+
+    vi.mock('../../redux/productsApi', () => ({
+      ...jest.requireActual('../../redux/productsApi'),
+      useGetProductsListQuery: vi.fn(() => ({
+        data: mockData,
+        isLoading: false,
+      })),
+    }));
 
     render(
-      <MyContext.Provider value={contextValue}>
-        <BrowserRouter>
+      <BrowserRouter>
+        <Provider store={store}>
           <CardList />
-        </BrowserRouter>
-      </MyContext.Provider>
+        </Provider>
+      </BrowserRouter>
     );
-
-    const productCards: HTMLDivElement[] =
-      screen.getAllByTestId('product-card');
-    expect(productCards.length).toBe(mockProductData.length);
+    waitFor(() => {
+      const productCards = screen.getAllByTestId('product-card');
+      expect(productCards).toHaveLength(mockData.results.length);
+    });
   });
 
   it('should show an appropriate message if no cards are present', () => {
-    contextValue.productsData = [];
+    const store = setupStore();
+    const mockData = {
+      results: [],
+      total: 10,
+    };
+
+    vi.mock('../../redux/productsApi', () => ({
+      ...jest.requireActual('../../redux/productsApi'),
+      useGetProductsListQuery: vi.fn(() => ({
+        data: mockData,
+        isLoading: false,
+      })),
+    }));
 
     render(
-      <MyContext.Provider value={contextValue}>
-        <BrowserRouter>
+      <BrowserRouter>
+        <Provider store={store}>
           <CardList />
-        </BrowserRouter>
-      </MyContext.Provider>
+        </Provider>
+      </BrowserRouter>
     );
 
-    const errorMessageElement: HTMLHeadingElement = screen.getByText(
-      'Oops! Products does not found'
-    );
-    expect(errorMessageElement).toHaveTextContent(
-      'Oops! Products does not found'
-    );
+    waitFor(() => {
+      const errorMessageElement: HTMLHeadingElement = screen.getByText(
+        'Oops! Products does not found'
+      );
+      expect(errorMessageElement).toHaveTextContent(
+        'Oops! Products does not found'
+      );
+    });
   });
 });

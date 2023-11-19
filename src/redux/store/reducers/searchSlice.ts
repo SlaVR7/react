@@ -4,7 +4,7 @@ export const searchSlice = createSlice({
   name: 'searchQuery',
   initialState: {
     userInput: localStorage.getItem('term') || '',
-    userType: '',
+    userType: localStorage.getItem('term') || '',
   },
   reducers: {
     setSearchQuery(state, action) {

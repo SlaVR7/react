@@ -7,16 +7,10 @@ export const productsApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiUrl,
     prepareHeaders: async (headers) => {
-      const accessToken = localStorage.getItem('token');
-      if (accessToken) {
-        const parsedAccessToken = JSON.parse(accessToken).access_token;
-        headers.set('Authorization', `Bearer ${parsedAccessToken}`);
-      } else {
-        await setAnonymousToken();
-        const newAccessToken = localStorage.getItem('token');
-        const parsedNewAccessToken = JSON.parse(newAccessToken!).access_token;
-        headers.set('Authorization', `Bearer ${parsedNewAccessToken}`);
-      }
+      await setAnonymousToken();
+      const newAccessToken = localStorage.getItem('token');
+      const parsedNewAccessToken = JSON.parse(newAccessToken!).access_token;
+      headers.set('Authorization', `Bearer ${parsedNewAccessToken}`);
 
       return headers;
     },

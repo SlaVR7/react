@@ -1,8 +1,11 @@
-import { DataState, ProductData } from '../../interfaces';
-import jest from 'jest-mock';
+import { ProductData } from '../../interfaces';
 import Card from '../../components/body/Card';
 import { Outlet } from 'react-router-dom';
 import DetailedCard from '../../pages/DetailedCard';
+import Pagination from '../../components/addition/Pagination';
+import Search from '../../components/header/Search';
+import { vi } from 'vitest';
+import MainPage from '../../pages/MainPage';
 
 export const mockData: ProductData = {
   name: {
@@ -30,29 +33,16 @@ export const mockData: ProductData = {
   },
 };
 
-export const contextValue: DataState = {
-  productsData: [],
-  setProductsData: () => {},
-  isLoading: false,
-  limit: '10',
-  page: '1',
-  setIsLoading: () => {},
-  inputValue: '',
-  setInputValue: (newValue) => {
-    if (typeof newValue === 'string') {
-      contextValue.inputValue = newValue;
-    }
-  },
-  setLimit: () => {},
-  totalPages: 0,
-  setTotalProducts: () => {},
-  setPage: () => {},
-  product: '',
-  setProduct: jest.fn(),
-  totalProducts: 0,
+export const localStorageMock: Storage = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+  key: vi.fn(),
+  length: 0,
 };
 
-export const routesConfig = [
+export const routesConfigDetailed = [
   {
     path: '/',
     element: (
@@ -64,5 +54,34 @@ export const routesConfig = [
     children: [
       { path: '/details/:queryParameters', element: <DetailedCard /> },
     ],
+  },
+];
+
+export const routesConfigMainPage = [
+  {
+    path: '/',
+    element: (
+      <>
+        <MainPage />
+        <Outlet />
+      </>
+    ),
+    children: [
+      { path: '/details/:queryParameters', element: <DetailedCard /> },
+    ],
+  },
+];
+
+export const routesConfigPagination = [
+  {
+    path: '/',
+    element: <Pagination />,
+  },
+];
+
+export const routesConfigSearch = [
+  {
+    path: '/',
+    element: <Search />,
   },
 ];
