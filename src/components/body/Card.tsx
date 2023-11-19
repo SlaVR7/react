@@ -1,8 +1,12 @@
 import React from 'react';
-import { ProductCardProps, ProductData } from '../../interfaces';
+import { ProductData } from '../../interfaces';
 import ImageComponent from '../addition/ImageComponent';
 import { useAppDispatch } from '../../hooks/redux';
 import { productsSlice } from '../../redux/store/reducers/productSlice';
+
+export interface ProductCardProps {
+  data: ProductData | null;
+}
 
 function ProductCard(props: ProductCardProps) {
   const dispatch = useAppDispatch();

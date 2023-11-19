@@ -22,28 +22,26 @@ function CardList() {
     }
   }, [data]);
 
-  let content;
-  if (data) {
-    const isCardsExist = data.results.length !== 0;
-    if (isLoading) {
-      content = <Loader />;
-    } else if (isCardsExist) {
-      content = data.results.map((product: ProductData, index: number) => (
-        <Link
-          key={product.name.en}
-          to={`details/?page=${page}&limit=${limit}&product=${product.name.en}`}
-        >
-          <ProductCard key={index} data={product} />
-        </Link>
-      ));
-    } else {
-      content = <h1>Oops! Products does not found</h1>;
-    }
-  }
-
   return (
     <main>
-      {isLoading ? <Loader /> : <div className="main">{content}</div>}
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="main">
+          {data.results.length > 0 ? (
+            data.results.map((product: ProductData, index: number) => (
+              <Link
+                key={product.name.en}
+                to={`details/?page=${page}&limit=${limit}&product=${product.name.en}`}
+              >
+                <ProductCard key={index} data={product} />
+              </Link>
+            ))
+          ) : (
+            <h1>Oops! Products not found</h1>
+          )}
+        </div>
+      )}
       <Pagination />
     </main>
   );

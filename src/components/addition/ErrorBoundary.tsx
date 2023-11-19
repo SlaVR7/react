@@ -1,5 +1,9 @@
-import React, { Component, ErrorInfo } from 'react';
-import { ErrorBoundaryProps, ErrorBoundaryState } from '../../interfaces';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { ErrorBoundaryState } from '../../interfaces';
+
+export interface ErrorBoundaryProps {
+  children: ReactNode;
+}
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {

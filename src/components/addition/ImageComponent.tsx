@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { ImageComponentProps } from '../../interfaces';
 import { Loader } from './Loader';
+
+export interface ImageComponentProps {
+  src: string;
+  alt: string;
+}
 
 function ImageComponent({ src, alt }: ImageComponentProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
