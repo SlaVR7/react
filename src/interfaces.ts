@@ -29,4 +29,7 @@ export interface AxiosResponse {
   data: {
     access_token: string;
   };
+  response: {
+    status: number;
+  };
 }
