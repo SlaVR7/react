@@ -13,12 +13,21 @@ const loadingSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addMatcher(
-      productsApi.endpoints.getProductsList.matchFulfilled,
-      (state, {}) => {
-        state.isLoading = false;
-      }
-    );
+    builder
+      .addMatcher(
+        productsApi.endpoints.getProductsList.matchPending,
+        (state, {}) => {
+          state.isLoading = true;
+          state.isDetailsLoading = true;
+        }
+      )
+      .addMatcher(
+        productsApi.endpoints.getProductsList.matchFulfilled,
+        (state, {}) => {
+          state.isLoading = false;
+          state.isDetailsLoading = false;
+        }
+      );
   },
 });
 
