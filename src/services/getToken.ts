@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AxiosResponse } from '../interfaces';
+import { TokenResponse } from '../interfaces';
 import { authUrl, clientId, projectKey, secret } from '../lib/constants';
 
 export async function getAnonymousToken() {
@@ -18,7 +18,7 @@ export async function getAnonymousToken() {
 }
 
 export const setAnonymousToken = async () => {
-  const id: AxiosResponse | undefined = await getAnonymousToken();
+  const id: TokenResponse | undefined = await getAnonymousToken();
   if (id) {
     localStorage.setItem(`token`, JSON.stringify(id.data));
   }

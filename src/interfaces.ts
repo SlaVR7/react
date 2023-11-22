@@ -25,10 +25,13 @@ export interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-export interface AxiosResponse {
+export interface TokenResponse {
   data: {
     access_token: string;
   };
+}
+
+export interface AxiosResponse {
   response: {
     status: number;
   };
