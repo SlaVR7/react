@@ -4,7 +4,7 @@ import { authUrl, clientId, projectKey, secret } from '../lib/constants';
 
 export async function getAnonymousToken() {
   try {
-    return await axios({
+    const response = await axios({
       method: 'post',
       url: `${authUrl}/oauth/${projectKey}/anonymous/token?grant_type=client_credentials`,
       auth: {
@@ -12,6 +12,7 @@ export async function getAnonymousToken() {
         password: secret,
       },
     });
+    return response.data.access_token;
   } catch (e) {
     console.log(e);
   }

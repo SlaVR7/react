@@ -1,13 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import queryString from 'query-string';
 
-const urlParams = queryString.parse(window.location.search);
-const initialPage: string = (urlParams.page as string) || '1';
+// const urlParams = queryString.parse(window.location.search);
+// const initialPage: string = (urlParams.page as string) || '1';
 
 const pagesSlice = createSlice({
   name: 'pages',
   initialState: {
-    currentPage: initialPage,
+    currentPage: '1',
     totalPages: '10',
   },
   reducers: {

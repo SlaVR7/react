@@ -3,8 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 export const searchSlice = createSlice({
   name: 'searchQuery',
   initialState: {
-    userInput: localStorage.getItem('term') || '',
-    userType: localStorage.getItem('term') || '',
+    userInput: '',
+    userType: '',
   },
   reducers: {
     setSearchQuery(state, action) {

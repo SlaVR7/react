@@ -9,7 +9,7 @@ function Search() {
   const setInputValue = searchSlice.actions.setSearchQuery;
   const userTypeValue = useAppSelector((state) => state.searchReducer.userType);
   const setUserType = searchSlice.actions.setUserType;
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <header>
@@ -24,7 +24,6 @@ function Search() {
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             dispatch(setInputValue(userTypeValue));
-            localStorage.setItem('term', userTypeValue);
           }
         }}
       />

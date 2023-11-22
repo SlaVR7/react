@@ -11,7 +11,7 @@ function ImageComponent({ src, alt }: ImageComponentProps) {
 
   return (
     <div>
-      {imageLoaded ? (
+      {!imageLoaded ? (
         <img src={src} alt={alt} className={'product-image'} />
       ) : (
         <Loader />

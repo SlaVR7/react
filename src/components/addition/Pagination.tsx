@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Pagination() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const page = useAppSelector((state) => state.pagesReducer.currentPage);
   const limit = useAppSelector((state) => state.limitReducer.limit);
   const totalPages = useAppSelector((state) => state.pagesReducer.totalPages);
