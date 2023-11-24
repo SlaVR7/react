@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { setupStore } from '../redux/store/store';
+import { setupStore } from '../redux/store';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { localStorageMock, routesConfigSearch } from './service/mockData';
 import { userEvent } from '@testing-library/user-event';

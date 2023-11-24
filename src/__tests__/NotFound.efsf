@@ -1,0 +1,15 @@
+import { screen } from '@testing-library/react';
+import { getPage } from 'next-page-tester';
+
+describe('404 Page', () => {
+  it('renders 404 component for an invalid route', async () => {
+    const { render } = await getPage({
+      route: '/nonexistent-page',
+    });
+
+    render();
+
+    expect(screen.getByText('404 - Page Not Found')).toBeInTheDocument();
+  });
+});
+

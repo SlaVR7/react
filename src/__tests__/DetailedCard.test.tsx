@@ -1,74 +1,51 @@
-import { describe, expect } from 'vitest';
+import { expect } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import DetailedCard from '../pages/DetailedCard';
-import {
-  BrowserRouter,
-  createMemoryRouter,
-  RouterProvider,
-} from 'react-router-dom';
+import DetailedCard from '../components/addition/DetailedCard';
 import '@testing-library/jest-dom';
-import { routesConfigDetailed } from './service/mockData';
-import jest from 'jest-mock';
-import * as fetchDataAndLoadImagesModule from '../services/fetchDataAndLoadImages';
-import { Provider } from 'react-redux';
-import { setupStore } from '../redux/store/store';
+import { mockResponse } from './service/mockData';
+import { vi } from 'vitest';
+import { useRouter } from 'next/router';
 
-describe('DetailedCard', () => {
-  it('should display loading indicator while fetching data', () => {
-    const store = setupStore();
-    render(
-      <BrowserRouter>
-        <Provider store={store}>
-          <DetailedCard />
-        </Provider>
-      </BrowserRouter>
-    );
-    const loader = screen.getByTestId('loader');
-    expect(loader).toBeInTheDocument();
+const routerObj = {
+  query: {
+    page: '1',
+    limit: '10',
+    search: 'product',
+    details: 'Product 1',
+  },
+  push: (url: string) => {
+    const params = new URLSearchParams(url);
+    routerObj.query.page = params.get('/?page')!;
+    routerObj.query.limit = params.get('limit')!;
+    routerObj.query.search = params.get('search')!;
+    routerObj.query.details = params.get('details')!;
+  },
+};
+
+vi.mock('next/router', () => ({
+  useRouter: () => routerObj,
+}));
+
+it('should correctly displays the detailed card data', async () => {
+  render(<DetailedCard data={mockResponse} />);
+  await waitFor(() => {
+    expect(screen.getByText('Product 1')).toBeInTheDocument();
+    expect(screen.getByAltText('product image 1')).toBeInTheDocument();
+    expect(screen.getByText('product description')).toBeInTheDocument();
   });
+});
 
-  it('should correctly displays the detailed card data', async () => {
-    const store = setupStore();
-    const fetchDataAndLoadImagesMock = jest.spyOn(
-      fetchDataAndLoadImagesModule,
-      'fetchDataAndLoadImages'
-    );
-    fetchDataAndLoadImagesMock.mockImplementation(
-      async (_targetProductObj, setIsLoadingImages) => {
-        setIsLoadingImages(false);
-      }
-    );
+it('hides details component on click', async () => {
+  let details = useRouter().query.details;
 
-    render(
-      <BrowserRouter>
-        <Provider store={store}>
-          <DetailedCard />
-        </Provider>
-      </BrowserRouter>
-    );
-    waitFor(() => {
-      expect(screen.getByText('Product 1')).toBeInTheDocument();
-      expect(screen.getAllByAltText('product image')).toHaveLength(2);
-      expect(screen.getByText('product description')).toBeInTheDocument();
-    });
-  });
+  expect(details).toBeTruthy();
+  render(<>{details && <DetailedCard data={mockResponse} />}</>);
 
-  it('hides details component on click', () => {
-    const store = setupStore();
-    const router = createMemoryRouter(routesConfigDetailed, {
-      initialEntries: ['/details/:queryParameters'],
-    });
-    render(
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    );
+  const closeButton = screen.getByText('Close');
+  fireEvent.click(closeButton);
 
-    expect(screen.queryByTestId('detailed-container')).toBeInTheDocument();
-
-    const closeButton = screen.getByText('Close');
-    fireEvent.click(closeButton);
-
-    expect(screen.queryByTestId('detailed-container')).toBeNull();
+  await waitFor(() => {
+    details = useRouter().query.details;
+    expect(details).toBeNull();
   });
 });

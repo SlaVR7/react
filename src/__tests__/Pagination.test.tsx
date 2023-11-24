@@ -1,29 +1,37 @@
+import '@testing-library/jest-dom';
+import Pagination from '../components/addition/Pagination';
+import { mockResponse } from './service/mockData';
+import { vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { setupStore } from '../redux/store/store';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { routesConfigPagination } from './service/mockData';
+import { useRouter } from 'next/router';
 
-describe('Pagination', () => {
-  it('component should update URL query parameter when page changes', async () => {
-    const store = setupStore();
-    const router = createMemoryRouter(routesConfigPagination, {
-      initialEntries: ['?page=1&limit=10'],
-    });
-    render(
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    );
+const routerObj = {
+  query: {
+    page: '1',
+    limit: '10',
+    search: 'product',
+  },
+  push: (url: string) => {
+    const params = new URLSearchParams(url);
+    routerObj.query.page = params.get('/?page')!;
+    routerObj.query.limit = params.get('limit')!;
+    routerObj.query.search = params.get('search')!;
+  },
+};
+vi.mock('next/router', () => ({
+  useRouter: () => routerObj,
+}));
 
-    expect(router.state.location.search).toBe('?page=1&limit=10');
+describe('Pagination component', () => {
+  it('updates URL query parameter when page changes', async () => {
+    render(<Pagination data={mockResponse} />);
 
-    const toPage3Button = screen.getByText('3');
-
-    fireEvent.click(toPage3Button);
+    const page3 = screen.getByText('3');
+    fireEvent.click(page3);
 
     await waitFor(() => {
-      expect(router.state.location.search).toBe('?page=3&limit=10');
+      const { query } = useRouter();
+      expect(query).toEqual({ page: '3', limit: '10', search: 'product' });
     });
   });
 });

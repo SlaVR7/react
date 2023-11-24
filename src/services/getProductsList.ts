@@ -5,7 +5,7 @@ export async function getProductsList(
   query: string,
   limit: number,
   page: string,
-  authorizationToken: string
+  token: string
 ) {
   return await axios.get(`${apiUrl}/${projectKey}/product-projections/search`, {
     params: {
@@ -14,7 +14,7 @@ export async function getProductsList(
       ['text.en']: query.trim().toLowerCase(),
     },
     headers: {
-      Authorization: `Bearer ${authorizationToken}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 }

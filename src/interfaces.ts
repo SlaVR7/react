@@ -2,6 +2,13 @@ type Url = {
   url: string;
 };
 
+export interface ProductsResponse {
+  data: {
+    results: ProductData[];
+    total: number;
+  };
+}
+
 export interface ProductData {
   name: {
     en: string;
@@ -23,13 +30,4 @@ export interface ProductData {
 
 export interface ErrorBoundaryState {
   hasError: boolean;
-}
-
-export interface AxiosResponse {
-  data: {
-    access_token: string;
-  };
-  response: {
-    status: number;
-  };
 }

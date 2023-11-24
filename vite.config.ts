@@ -12,7 +12,8 @@ export default defineConfig({
       provider: 'v8',
       all: true,
       exclude: [
-        'src/main.tsx',
+        '.next/',
+        'next-env.d.ts',
         'src/interfaces.ts',
         '.eslintrc.cjs',
         'src/vite-env.d.ts',

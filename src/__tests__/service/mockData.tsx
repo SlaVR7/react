@@ -1,11 +1,5 @@
 import { ProductData } from '../../interfaces';
-import Card from '../../components/body/Card';
-import { Outlet } from 'react-router-dom';
-import DetailedCard from '../../pages/DetailedCard';
-import Pagination from '../../components/addition/Pagination';
-import Search from '../../components/header/Search';
 import { vi } from 'vitest';
-import MainPage from '../../pages/MainPage';
 
 export const mockData: ProductData = {
   name: {
@@ -33,6 +27,11 @@ export const mockData: ProductData = {
   },
 };
 
+export const mockResponse = {
+  results: [mockData],
+  total: 60,
+};
+
 export const localStorageMock: Storage = {
   getItem: vi.fn(),
   setItem: vi.fn(),
@@ -42,46 +41,46 @@ export const localStorageMock: Storage = {
   length: 0,
 };
 
-export const routesConfigDetailed = [
-  {
-    path: '/',
-    element: (
-      <>
-        <Card data={mockData} />
-        <Outlet />
-      </>
-    ),
-    children: [
-      { path: '/details/:queryParameters', element: <DetailedCard /> },
-    ],
-  },
-];
-
-export const routesConfigMainPage = [
-  {
-    path: '/',
-    element: (
-      <>
-        <MainPage />
-        <Outlet />
-      </>
-    ),
-    children: [
-      { path: '/details/:queryParameters', element: <DetailedCard /> },
-    ],
-  },
-];
-
-export const routesConfigPagination = [
-  {
-    path: '/',
-    element: <Pagination />,
-  },
-];
-
-export const routesConfigSearch = [
-  {
-    path: '/',
-    element: <Search />,
-  },
-];
+// export const routesConfigDetailed = [
+//   {
+//     path: '/',
+//     element: (
+//       <>
+//         <Card data={mockData} />
+//         <DetailedCard data={}/>
+//       </>
+//     ),
+//     children: [
+//       { path: '/details/:queryParameters', element: <DetailedCard /> },
+//     ],
+//   },
+// ];
+//
+// export const routesConfigMainPage = [
+//   {
+//     path: '/',
+//     element: (
+//       <>
+//         <MainPage />
+//         <Outlet />
+//       </>
+//     ),
+//     children: [
+//       { path: '/details/:queryParameters', element: <DetailedCard /> },
+//     ],
+//   },
+// ];
+//
+// export const routesConfigPagination = [
+//   {
+//     path: '/',
+//     element: <Pagination />,
+//   },
+// ];
+//
+// export const routesConfigSearch = [
+//   {
+//     path: '/',
+//     element: <Search />,
+//   },
+// ];

@@ -1,33 +1,39 @@
 import ErrorBoundary from '../src/components/addition/ErrorBoundary';
 import Search from '../src/components/header/Search';
 import CardList from '../src/components/body/CardList';
-import { Outlet } from 'react-router-dom';
 import React from 'react';
 import { GetServerSidePropsContext } from 'next';
-import { getProductsList } from '../src/services/getProductsList';
 import Head from 'next/head';
-import {getAnonymousToken} from "../src/services/getToken";
+import { getAnonymousToken } from '../src/services/getToken';
+import { productsApi } from '../src/redux/productsApi';
+import { store } from '../src/redux/store';
+import { ProductsResponse } from '../src/interfaces';
+import { useRouter } from 'next/router';
+import DetailedCard from '../src/components/addition/DetailedCard';
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const query = '';
-  const limit = 10;
-  const page = '1';
-  console.log('TOKEN IS ', context.req.headers);
-
-  const authorizationToken = await getAnonymousToken();
-
+  const { query } = context;
+  const token = await getAnonymousToken();
+  const searchQuery = query.search || '';
+  const limit = query.limit || 10;
+  const page = query.page || '1';
   try {
-    const response = await getProductsList(query, limit, page, authorizationToken);
-    console.log('response', response)
+    const data = await store.dispatch(
+      productsApi.endpoints.getProductsList.initiate({
+        query: searchQuery,
+        limit: +limit,
+        page,
+        token,
+      })
+    );
     return {
       props: {
-        data: response.data,
+        data: data.data,
       },
     };
   } catch (error) {
-    // console.log('error catch', error)
     return {
       props: {
         data: null,
@@ -36,12 +42,15 @@ export const getServerSideProps = async (
   }
 };
 
-const MainPage = (props: GetServerSidePropsType<typeof getServerSideProps>) => {
+const MainPage = (props: ProductsResponse) => {
+  const router = useRouter();
+  const detailsProduct = router.query.details;
   return (
     <>
       <Head>
         <title>Product list</title>
         <meta name="description" content="Some description" />
+        <link rel="shortcut icon" href="logo.svg" type="image/x-icon" />
       </Head>
       <ErrorBoundary>
         <div data-testid="main-page" className="main-posts-container">
@@ -49,7 +58,7 @@ const MainPage = (props: GetServerSidePropsType<typeof getServerSideProps>) => {
             <Search />
             <CardList data={props.data} />
           </div>
-          <Outlet />
+          {detailsProduct && <DetailedCard data={props.data} />}
         </div>
       </ErrorBoundary>
     </>

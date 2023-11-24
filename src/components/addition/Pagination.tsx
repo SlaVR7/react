@@ -1,26 +1,28 @@
-import { getPagesArray } from '../../services/getPagesCount';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { setCurrentPage } from '../../redux/store/reducers/pagesSlice';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
+import { ProductsResponse } from '../../interfaces';
 
-function Pagination() {
-  const dispatch = useAppDispatch();
-  // const navigate = useNavigate();
-  const page = useAppSelector((state) => state.pagesReducer.currentPage);
-  const limit = useAppSelector((state) => state.limitReducer.limit);
-  const totalPages = useAppSelector((state) => state.pagesReducer.totalPages);
-
-  const currentPage = +page > +totalPages ? '1' : page;
-  const pagesArray: string[] = getPagesArray(+totalPages);
-
+function Pagination({ data }: ProductsResponse) {
+  const router = useRouter();
+  const { limit, page, search } = router.query;
+  const totalPages = data.total / +(limit || 10);
+  let currentPage: string;
+  if (page) {
+    currentPage = +page > +totalPages ? '1' : (page as string);
+  } else {
+    currentPage = '1';
+  }
+  const pagesArray: string[] = Array.from({ length: totalPages }, (_e, i) =>
+    (i + 1).toString()
+  );
   return (
     <div className="pagination-pages">
       {pagesArray.map((p: string) => {
         return (
           <div
             onClick={() => {
-              dispatch(setCurrentPage(p));
-              navigate(`/?page=${p}&limit=${limit}`);
+              router.push(
+                `/?page=${p}&limit=${limit || '10'}&search=${search || ''}`
+              );
             }}
             className={
               currentPage === p

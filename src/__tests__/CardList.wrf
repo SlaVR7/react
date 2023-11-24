@@ -4,7 +4,7 @@ import CardList from '../components/body/CardList';
 import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
-import { setupStore } from '../redux/store/store';
+import { setupStore } from '../redux/store';
 
 describe('CardList', () => {
   it('renders the correct number of product cards', () => {

@@ -1,29 +1,22 @@
 import React from 'react';
 import { ProductData } from '../../interfaces';
-import ImageComponent from '../addition/ImageComponent';
-import { useAppDispatch } from '../../hooks/redux';
-import { productsSlice } from '../../redux/store/reducers/productSlice';
 
 export interface ProductCardProps {
   data: ProductData | null;
 }
 
 function ProductCard(props: ProductCardProps) {
-  const dispatch = useAppDispatch();
-  const setIsDetailsOpen = productsSlice.actions.setIsDetailsOpen;
   const data: ProductData | null = props.data;
   if (!data) return;
 
   return (
-    <div
-      onClick={() => dispatch(setIsDetailsOpen(true))}
-      data-testid="product-card"
-      className={'product-card'}
-    >
+    <div data-testid="product-card" className={'product-card'}>
       <div>
-        <ImageComponent
+        <img
+          data-testid="product-image"
           src={data.masterVariant.images[0].url}
           alt={data.name + ' photo'}
+          className={'product-image'}
         />
         <h2 className={'product-name'}>{data.name.en}</h2>
       </div>
