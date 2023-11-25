@@ -1,5 +1,4 @@
 import { ProductData } from '../../interfaces';
-import { vi } from 'vitest';
 
 export const mockData: ProductData = {
   name: {
@@ -32,55 +31,7 @@ export const mockResponse = {
   total: 60,
 };
 
-export const localStorageMock: Storage = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-  key: vi.fn(),
-  length: 0,
+export const emptyMockData = {
+  results: [],
+  total: 0,
 };
-
-// export const routesConfigDetailed = [
-//   {
-//     path: '/',
-//     element: (
-//       <>
-//         <Card data={mockData} />
-//         <DetailedCard data={}/>
-//       </>
-//     ),
-//     children: [
-//       { path: '/details/:queryParameters', element: <DetailedCard /> },
-//     ],
-//   },
-// ];
-//
-// export const routesConfigMainPage = [
-//   {
-//     path: '/',
-//     element: (
-//       <>
-//         <MainPage />
-//         <Outlet />
-//       </>
-//     ),
-//     children: [
-//       { path: '/details/:queryParameters', element: <DetailedCard /> },
-//     ],
-//   },
-// ];
-//
-// export const routesConfigPagination = [
-//   {
-//     path: '/',
-//     element: <Pagination />,
-//   },
-// ];
-//
-// export const routesConfigSearch = [
-//   {
-//     path: '/',
-//     element: <Search />,
-//   },
-// ];

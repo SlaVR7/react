@@ -15,7 +15,7 @@ function Search() {
 
   return (
     <header>
-      <form onSubmit={handleSubmit} id="myForm">
+      <form role="form" onSubmit={handleSubmit} id="myForm">
         <input
           className={'search-input'}
           type="text"
@@ -24,6 +24,7 @@ function Search() {
           form={'myForm'}
         />
         <select
+          role="select"
           className={'search-input number-input'}
           onChange={(event) => {
             router.push(
