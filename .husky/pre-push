@@ -1,0 +1,5 @@
+#!/bin/sh
+# .husky/pre-push
+
+# Run your pre-push commands or scripts
+npm run test -- --watch=false
